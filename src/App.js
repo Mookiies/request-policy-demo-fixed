@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  Provider
+} from "urql";
 
-function App() {
+import { requestPolicyExchange } from "@urql/exchange-request-policy";
+import { offlineExchange } from "@urql/exchange-graphcache";
+import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
+import { Todos } from "./components";
+
+const storage = makeDefaultStorage({
+  idbName: "graphcache-v3", // The name of the IndexedDB database
+  maxAge: 7 // The maximum age of the persisted data in days
+});
+
+const cache = offlineExchange({
+  storage
+});
+
+const client = createClient({
+  url: "https://0ufyz.sse.codesandbox.io",
+  exchanges: [
+    dedupExchange,
+    requestPolicyExchange({
+      ttl: 2 * 1000,
+    }),
+    cache,
+    fetchExchange
+  ],
+  requestPolicy: "cache-first"
+});
+
+const App = () => {
+  const [showTodos, setShowTodos] = useState(false);
+  const toggleTodos = () => {
+    setShowTodos((previousValue) => !previousValue);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider value={client}>
+      <main>
+        <button onClick={toggleTodos}>Toggle todos</button>
+        {showTodos ? <Todos /> : null}
+      </main>
+    </Provider>
   );
-}
+};
 
 export default App;
