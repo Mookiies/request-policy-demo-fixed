@@ -21,7 +21,7 @@ const cache = offlineExchange({
 });
 
 const client = createClient({
-  url: "https://0ufyz.sse.codesandbox.io",
+  url: "https://0ufyz-4000.sse.codesandbox.io",
   exchanges: [
     dedupExchange,
     requestPolicyExchange({
