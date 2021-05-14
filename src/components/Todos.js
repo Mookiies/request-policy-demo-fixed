@@ -7,7 +7,7 @@ export const Todos = () => {
   const [res, executeQuery] = useQuery({ query: TodoQuery });
 
   const todos = useMemo(() => {
-    if (res.fetching || res.data === undefined) {
+    if (res.fetching || !res.data) {
       return <Loading />;
     }
 
