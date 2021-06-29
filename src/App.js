@@ -25,7 +25,7 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     requestPolicyExchange({
-      ttl: 2 * 1000,
+      ttl: 5 * 1000,
       shouldUpgrade: (op) => {
         console.log('upgrading', op);
         return true;
